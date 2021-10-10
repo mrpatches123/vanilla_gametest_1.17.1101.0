@@ -1,5 +1,5 @@
-import * as GameTest from "GameTest";
-import { BlockTypes, BlockProperties, BlockLocation } from "Minecraft";
+import * as GameTest from "mojang-gametest";
+import { MinecraftBlockTypes, BlockProperties, BlockLocation } from "mojang-minecraft";
 
 ///
 // Setup constants
@@ -19,20 +19,20 @@ const VERTICAL_TEST_PLACEMENT_MAP = [
 ];
 
 function placeBottomSlab(test, pos) {
-  const blockPermutation = BlockTypes.stoneSlab.createDefaultBlockPermutation();
+  const blockPermutation = MinecraftBlockTypes.stoneSlab.createDefaultBlockPermutation();
   blockPermutation.getProperty(BlockProperties.stoneSlabType).value = "stone_brick";
   test.setBlockPermutation(blockPermutation, pos);
 }
 
 function placeTopSlab(test, pos) {
-  const blockPermutation = BlockTypes.stoneSlab.createDefaultBlockPermutation();
+  const blockPermutation = MinecraftBlockTypes.stoneSlab.createDefaultBlockPermutation();
   blockPermutation.getProperty(BlockProperties.stoneSlabType).value = "stone_brick";
   blockPermutation.getProperty(BlockProperties.topSlotBit).value = true;
   test.setBlockPermutation(blockPermutation, pos);
 }
 
 function placeBlock(test, pos) {
-  test.setBlockType(BlockTypes.stonebrick, pos);
+  test.setBlockType(MinecraftBlockTypes.stonebrick, pos);
 }
 
 /*
@@ -163,18 +163,18 @@ function placeBlocks(test, floor1, floor2, mid2, ceiling2) {
 
 function getBlockPermutationForMapChar(mapChar) {
   if (mapChar == "#") {
-    return BlockTypes.stonebrick.createDefaultBlockPermutation();
+    return MinecraftBlockTypes.stonebrick.createDefaultBlockPermutation();
   } else if (mapChar == "_") {
-    let result = BlockTypes.stoneSlab.createDefaultBlockPermutation();
+    let result = MinecraftBlockTypes.stoneSlab.createDefaultBlockPermutation();
     result.getProperty(BlockProperties.stoneSlabType).value = "stone_brick";
     return result;
   } else if (mapChar == "^") {
-    let result = BlockTypes.stoneSlab.createDefaultBlockPermutation();
+    let result = MinecraftBlockTypes.stoneSlab.createDefaultBlockPermutation();
     result.getProperty(BlockProperties.stoneSlabType).value = "stone_brick";
     result.getProperty(BlockProperties.topSlotBit).value = true;
     return result;
   } else {
-    return BlockTypes.air.createDefaultBlockPermutation();
+    return MinecraftBlockTypes.air.createDefaultBlockPermutation();
   }
 }
 
@@ -195,12 +195,12 @@ function createVerticalTestFunctionWithPlacementMap(counter, placementMap, tag) 
     const spawnPos = new BlockLocation(5, 3, 4);
 
     // Do the test
-    test.assertEntityNotPresent(villagerEntityType, bedPos);
+    test.assertEntityPresent(villagerEntityType, bedPos, false);
     test.spawn(villagerEntitySpawnType, spawnPos);
 
     test.succeedWhen(() => {
-      test.assertEntityNotPresent(villagerEntityType, aboveBedPos);
-      test.assertEntityPresent(villagerEntityType, bedPos);
+      test.assertEntityPresent(villagerEntityType, aboveBedPos, false);
+      test.assertEntityPresent(villagerEntityType, bedPos, true);
 
       test.killAllEntities(); // Clean up villagers so the VillageManager doesn't waste time looking for points of interest (POIs)
     });
@@ -229,11 +229,11 @@ function createVerticalTestFunctionWithCustomBlocks(testName, floor1, floor2, mi
     const spawnPos = new BlockLocation(5, 3, 4);
 
     // Do the test
-    test.assertEntityNotPresent(villagerEntityType, bedPos);
+    test.assertEntityPresent(villagerEntityType, bedPos, false);
     test.spawn(villagerEntitySpawnType, spawnPos);
     test.succeedWhen(() => {
-      test.assertEntityNotPresent(villagerEntityType, aboveBedPos);
-      test.assertEntityPresent(villagerEntityType, bedPos);
+      test.assertEntityPresent(villagerEntityType, aboveBedPos, false);
+      test.assertEntityPresent(villagerEntityType, bedPos, true);
 
       test.killAllEntities(); // Clean up villagers so the VillageManager doesn't waste time looking for points of interest (POIs)
     });
@@ -260,10 +260,10 @@ GameTest.register("PathFindingTests", "doorway_bottleneck", (test) => {
   test.spawn(villagerEntitySpawnType, new BlockLocation(1, 2, 4));
 
   test.succeedWhen(() => {
-    test.assertEntityPresent(villagerEntitySpawnType, new BlockLocation(5, 2, 2));
-    test.assertEntityPresent(villagerEntitySpawnType, new BlockLocation(5, 2, 1));
-    test.assertEntityPresent(villagerEntitySpawnType, new BlockLocation(1, 2, 2));
-    test.assertEntityPresent(villagerEntitySpawnType, new BlockLocation(1, 2, 1));
+    test.assertEntityPresent(villagerEntitySpawnType, new BlockLocation(5, 2, 2), true);
+    test.assertEntityPresent(villagerEntitySpawnType, new BlockLocation(5, 2, 1), true);
+    test.assertEntityPresent(villagerEntitySpawnType, new BlockLocation(1, 2, 2), true);
+    test.assertEntityPresent(villagerEntitySpawnType, new BlockLocation(1, 2, 1), true);
   });
 })
   .padding(TEST_PADDING) // Space out villager tests to stop them from confusing each other
@@ -277,10 +277,10 @@ GameTest.register("PathFindingTests", "big_obstacle_course", (test) => {
   const spawnPos = new BlockLocation(5, 3, 4);
   const villagerEntitySpawnType = "minecraft:villager_v2<minecraft:spawn_farmer>";
 
-  test.assertEntityNotPresent(villagerEntitySpawnType, bedPos);
+  test.assertEntityPresent(villagerEntitySpawnType, bedPos, false);
   test.spawn(villagerEntitySpawnType, spawnPos);
 
-  test.succeedWhenEntityPresent(villagerEntitySpawnType, bedPos);
+  test.succeedWhenEntityPresent(villagerEntitySpawnType, bedPos, true);
 })
   .padding(TEST_PADDING)
   .maxTicks(TEST_MAX_TICKS)
@@ -294,10 +294,10 @@ GameTest.register("PathFindingTests", "simple", (test) => {
   const spawnPos = new BlockLocation(5, 3, 4);
   const villagerEntitySpawnType = "minecraft:villager_v2<minecraft:spawn_farmer>";
 
-  test.assertEntityNotPresent(villagerEntitySpawnType, bedPos);
+  test.assertEntityPresent(villagerEntitySpawnType, bedPos, false);
   test.spawn(villagerEntitySpawnType, spawnPos);
 
-  test.succeedWhenEntityPresent(villagerEntitySpawnType, bedPos);
+  test.succeedWhenEntityPresent(villagerEntitySpawnType, bedPos, true);
 })
   .maxTicks(TEST_MAX_TICKS)
   .batch("night")
@@ -310,10 +310,10 @@ GameTest.register("PathFindingTests", "carpet_walk_around", (test) => {
   const spawnPos = new BlockLocation(5, 3, 4);
   const villagerEntitySpawnType = "minecraft:villager_v2<minecraft:spawn_farmer>";
 
-  test.assertEntityNotPresent(villagerEntitySpawnType, bedPos);
+  test.assertEntityPresent(villagerEntitySpawnType, bedPos, false);
   test.spawn(villagerEntitySpawnType, spawnPos);
 
-  test.succeedWhenEntityPresent(villagerEntitySpawnType, bedPos);
+  test.succeedWhenEntityPresent(villagerEntitySpawnType, bedPos, true);
 })
   .padding(TEST_PADDING)
   .maxTicks(TEST_MAX_TICKS)

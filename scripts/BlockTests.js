@@ -1,5 +1,6 @@
-import * as GameTest from "GameTest";
-import { BlockLocation, BlockTypes, Items, ItemStack } from "Minecraft";
+import * as GameTest from "mojang-gametest";
+import { BlockLocation, MinecraftBlockTypes, MinecraftItemTypes, BlockProperties, Direction } from "mojang-minecraft";
+import GameTestExtensions from "./GameTestExtensions.js";
 
 const TicksPerSecond = 20;
 const FiveSecondsInTicks = 5 * TicksPerSecond;
@@ -9,46 +10,46 @@ const FALLING_SAND_STARTUP_TICKS = 1;
 const FALLING_SAND_TIMEOUT_TICKS = 20;
 
 const BLOCKS_THAT_POP_SAND = [
-  [BlockTypes.woodenSlab, BlockTypes.air], //replace missing oakSlab() with woodenSlab()
-  [BlockTypes.chest, BlockTypes.stone],
-  [BlockTypes.rail, BlockTypes.stone],
-  [BlockTypes.stoneButton, BlockTypes.stone],
-  [BlockTypes.woodenPressurePlate, BlockTypes.stone], //replace missing OakPressurePlate() with woodenPressurePlate()
-  [BlockTypes.torch, BlockTypes.stone],
-  [BlockTypes.soulSand, BlockTypes.air],
+  [MinecraftBlockTypes.woodenSlab, MinecraftBlockTypes.air], //replace missing oakSlab() with woodenSlab()
+  [MinecraftBlockTypes.chest, MinecraftBlockTypes.stone],
+  [MinecraftBlockTypes.rail, MinecraftBlockTypes.stone],
+  [MinecraftBlockTypes.stoneButton, MinecraftBlockTypes.stone],
+  [MinecraftBlockTypes.woodenPressurePlate, MinecraftBlockTypes.stone], //replace missing OakPressurePlate() with woodenPressurePlate()
+  [MinecraftBlockTypes.torch, MinecraftBlockTypes.stone],
+  [MinecraftBlockTypes.soulSand, MinecraftBlockTypes.air],
 ];
 
 const BLOCKS_REPLACED_BY_SAND = [
-  BlockTypes.water,
-  BlockTypes.air,
-  BlockTypes.tallgrass, //replace grass() with tallgrass(). It needs grass, not grass block, BlockTypes.grass is actually grass block.
+  MinecraftBlockTypes.water,
+  MinecraftBlockTypes.air,
+  MinecraftBlockTypes.tallgrass, //replace grass() with tallgrass(). It needs grass, not grass block, MinecraftBlockTypes.grass is actually grass block.
 ];
 
 const BLOCKS_THAT_SUPPORT_SAND = [
-  BlockTypes.stone,
-  BlockTypes.fence, //replace missing oakFence() with fence()
-  BlockTypes.oakStairs,
-  BlockTypes.scaffolding,
+  MinecraftBlockTypes.stone,
+  MinecraftBlockTypes.fence, //replace missing oakFence() with fence()
+  MinecraftBlockTypes.oakStairs,
+  MinecraftBlockTypes.scaffolding,
 ];
 
 function testThatFallingSandPopsIntoItem(test) {
-  test.setBlockType(BlockTypes.sand, new BlockLocation(1, 4, 1));
+  test.setBlockType(MinecraftBlockTypes.sand, new BlockLocation(1, 4, 1));
   const targetPos = new BlockLocation(1, 2, 1);
 
   test.succeedWhen(() => {
-    test.assertEntityPresentInArea("minecraft:item");
-    test.assertEntityNotPresent("minecraft:falling_block", targetPos);
+    test.assertEntityPresentInArea("minecraft:item", true);
+    test.assertEntityPresent("minecraft:falling_block", targetPos, false);
   });
 }
 
 function testThatFallingSandReplaces(test) {
-  test.setBlockType(BlockTypes.sand, new BlockLocation(1, 4, 1));
-  test.succeedWhenBlockTypePresent(BlockTypes.sand, new BlockLocation(1, 2, 1));
+  test.setBlockType(MinecraftBlockTypes.sand, new BlockLocation(1, 4, 1));
+  test.succeedWhenBlockTypePresent(MinecraftBlockTypes.sand, new BlockLocation(1, 2, 1), true);
 }
 
 function testThatFallingSandLandsOnTop(test) {
-  test.setBlockType(BlockTypes.sand, new BlockLocation(1, 4, 1));
-  test.succeedWhenBlockTypePresent(BlockTypes.sand, new BlockLocation(1, 3, 1));
+  test.setBlockType(MinecraftBlockTypes.sand, new BlockLocation(1, 4, 1));
+  test.succeedWhenBlockTypePresent(MinecraftBlockTypes.sand, new BlockLocation(1, 3, 1), true);
 }
 
 ///
@@ -57,19 +58,17 @@ function testThatFallingSandLandsOnTop(test) {
 for (let i = 0; i < BLOCKS_THAT_POP_SAND.length; i++) {
   const topBlock = BLOCKS_THAT_POP_SAND[i][0];
   const bottomBlock = BLOCKS_THAT_POP_SAND[i][1];
-  const testName = "blocktests.falling_sand_pops_on_" + topBlock.name;
+  const testName = "blocktests.falling_sand_pops_on_" + topBlock.getName();
   let tag = null;
 
-  //When sand block falls on soul sand, it should pop into item.
-  //Buttons will break off if they face the worng direction. Wait API that can set the block property for "direction" for the button.
-  if (topBlock.name == "soul_sand" || topBlock.name == "stone_button") {
-    tag = GameTest.Tags.suiteDisabled;
-  } else {
-    tag = GameTest.Tags.suiteDefault;
-  }
-
   GameTest.register("BlockTests", testName, (test) => {
-    test.setBlockType(topBlock, new BlockLocation(1, 2, 1));
+    if (topBlock.getName() == "minecraft:stone_button") {
+      const buttonPermutation = MinecraftBlockTypes.stoneButton.createDefaultBlockPermutation();
+      buttonPermutation.getProperty(BlockProperties.facingDirection).value = Direction.north;
+      test.setBlockPermutation(buttonPermutation, new BlockLocation(1, 2, 1));
+    } else {
+      test.setBlockType(topBlock, new BlockLocation(1, 2, 1));
+    }
     test.setBlockType(bottomBlock, new BlockLocation(1, 1, 1));
     testThatFallingSandPopsIntoItem(test);
   })
@@ -78,15 +77,15 @@ for (let i = 0; i < BLOCKS_THAT_POP_SAND.length; i++) {
     .maxTicks(FALLING_SAND_TIMEOUT_TICKS)
     .setupTicks(FALLING_SAND_STARTUP_TICKS)
     .required(true)
-    .tag(tag);
+    .tag(GameTest.Tags.suiteDefault);
 }
 
 for (const block of BLOCKS_REPLACED_BY_SAND) {
-  const testName = "blocktests.falling_sand_replaces_" + block.name;
+  const testName = "blocktests.falling_sand_replaces_" + block.getName();
 
   GameTest.register("BlockTests", testName, (test) => {
     //SetBlock will fail if set a block to what it already is. Skip to call setblock() for test falling_sand_replaces_air because it's just air block in initial structure.
-    if (block.name != "air") {
+    if (block.getName() != "minecraft:air") {
       test.setBlockType(block, new BlockLocation(1, 2, 1));
     }
     testThatFallingSandReplaces(test);
@@ -100,15 +99,8 @@ for (const block of BLOCKS_REPLACED_BY_SAND) {
 }
 
 for (const block of BLOCKS_THAT_SUPPORT_SAND) {
-  const testName = "blocktests.falling_sand_lands_on_" + block.name;
+  const testName = "blocktests.falling_sand_lands_on_" + block.getName();
   let tag = null;
-
-  //When sand block falls on fence or stair, it shouldn't pop into item.
-  if (block.name == "fence" || block.name == "oak_stairs") {
-    tag = GameTest.Tags.suiteDisabled;
-  } else {
-    tag = GameTest.Tags.suiteDefault;
-  }
 
   GameTest.register("BlockTests", testName, (test) => {
     test.setBlockType(block, new BlockLocation(1, 2, 1));
@@ -119,44 +111,44 @@ for (const block of BLOCKS_THAT_SUPPORT_SAND) {
     .maxTicks(FALLING_SAND_TIMEOUT_TICKS)
     .setupTicks(FALLING_SAND_STARTUP_TICKS)
     .required(true)
-    .tag(tag);
+    .tag(GameTest.Tags.suiteDefault);
 }
 
 GameTest.register("BlockTests", "concrete_solidifies_in_shallow_water", (test) => {
-  test.setBlockType(BlockTypes.concretepowder, new BlockLocation(1, 3, 1));
+  test.setBlockType(MinecraftBlockTypes.concretepowder, new BlockLocation(1, 3, 1));
 
   test.succeedWhen(() => {
-    test.assertBlockTypePresent(BlockTypes.concrete, new BlockLocation(1, 2, 1));
+    test.assertBlockPresent(MinecraftBlockTypes.concrete, new BlockLocation(1, 2, 1), true);
   });
 })
   .maxTicks(FiveSecondsInTicks)
   .tag(GameTest.Tags.suiteDefault);
 
 GameTest.register("BlockTests", "concrete_solidifies_in_deep_water", (test) => {
-  test.setBlockType(BlockTypes.concretepowder, new BlockLocation(1, 4, 1));
+  test.setBlockType(MinecraftBlockTypes.concretepowder, new BlockLocation(1, 4, 1));
 
   test.succeedWhen(() => {
-    test.assertBlockTypePresent(BlockTypes.concrete, new BlockLocation(1, 2, 1));
+    test.assertBlockPresent(MinecraftBlockTypes.concrete, new BlockLocation(1, 2, 1), true);
   });
 })
   .maxTicks(FiveSecondsInTicks)
   .tag(GameTest.Tags.suiteDefault);
 
 GameTest.register("BlockTests", "concrete_solidifies_next_to_water", (test) => {
-  test.setBlockType(BlockTypes.concretepowder, new BlockLocation(1, 3, 1));
+  test.setBlockType(MinecraftBlockTypes.concretepowder, new BlockLocation(1, 3, 1));
 
   test.succeedWhen(() => {
-    test.assertBlockTypePresent(BlockTypes.concrete, new BlockLocation(1, 2, 1));
+    test.assertBlockPresent(MinecraftBlockTypes.concrete, new BlockLocation(1, 2, 1), true);
   });
 })
   .maxTicks(FiveSecondsInTicks)
   .tag(GameTest.Tags.suiteDefault);
 
 GameTest.register("BlockTests", "sand_fall_boats", (test) => {
-  test.setBlockType(BlockTypes.sand, new BlockLocation(1, 4, 1));
+  test.setBlockType(MinecraftBlockTypes.sand, new BlockLocation(1, 4, 1));
 
   test.succeedWhen(() => {
-    test.assertBlockTypePresent(BlockTypes.sand, new BlockLocation(1, 2, 1));
+    test.assertBlockPresent(MinecraftBlockTypes.sand, new BlockLocation(1, 2, 1), true);
   });
 })
   .maxTicks(FiveSecondsInTicks)
@@ -186,7 +178,7 @@ GameTest.register("BlockTests", "turtle_eggs_survive_xp", (test) => {
 
   // Fail if the turtle egg dies
   test.failIf(() => {
-    test.assertBlockTypePresent(BlockTypes.air, new BlockLocation(1, 2, 1));
+    test.assertBlockPresent(MinecraftBlockTypes.air, new BlockLocation(1, 2, 1), true);
   });
 
   // Succeed after 4 seconds
@@ -200,7 +192,7 @@ GameTest.register("BlockTests", "turtle_eggs_survive_item", (test) => {
 
   // Fail if the turtle egg dies
   test.failIf(() => {
-    test.assertBlockTypePresent(BlockTypes.air, new BlockLocation(1, 2, 1));
+    test.assertBlockPresent(MinecraftBlockTypes.air, new BlockLocation(1, 2, 1), true);
   });
 
   // Succeed after 4 seconds
@@ -213,7 +205,7 @@ GameTest.register("BlockTests", "turtle_eggs_squished_by_mob", (test) => {
   const zombieEntityType = "minecraft:husk";
   const zombiePosition = new BlockLocation(1, 5, 1);
   test.spawn(zombieEntityType, zombiePosition);
-  test.succeedWhenBlockTypePresent(BlockTypes.air, new BlockLocation(1, 2, 1));
+  test.succeedWhenBlockTypePresent(MinecraftBlockTypes.air, new BlockLocation(1, 2, 1), true);
 })
   .required(false)
   .maxTicks(TicksPerSecond * 20)
@@ -226,10 +218,10 @@ GameTest.register("BlockTests", "explosion_drop_location", (test) => {
     const redSandstonePos = new BlockLocation(6, 2, 4);
     const sandstonePos = new BlockLocation(2, 2, 4);
 
-    test.assertBlockTypeNotPresent(BlockTypes.redSandstone, redSandstonePos);
-    test.assertBlockTypeNotPresent(BlockTypes.sandstone, sandstonePos);
-    test.assertItemEntityPresent(Items.redSandstone, redSandstonePos, 2.0);
-    test.assertItemEntityPresent(Items.sandstone, sandstonePos, 2.0);
+    test.assertBlockPresent(MinecraftBlockTypes.redSandstone, redSandstonePos, false);
+    test.assertBlockPresent(MinecraftBlockTypes.sandstone, sandstonePos, false);
+    test.assertItemEntityPresent(MinecraftItemTypes.redSandstone, redSandstonePos, 2.0, true);
+    test.assertItemEntityPresent(MinecraftItemTypes.sandstone, sandstonePos, 2.0, true);
   });
 })
   .maxTicks(TicksPerSecond * 10)
@@ -238,12 +230,12 @@ GameTest.register("BlockTests", "explosion_drop_location", (test) => {
   .maxAttempts(3);
 
 GameTest.register("BlockTests", "concrete_pops_off_waterlogged_chest", (test) => {
-  test.setBlockType(BlockTypes.concretepowder, new BlockLocation(1, 4, 1));
+  test.setBlockType(MinecraftBlockTypes.concretepowder, new BlockLocation(1, 4, 1));
   test.succeedWhen(() => {
     const chestPos = new BlockLocation(1, 2, 1);
-    test.assertBlockTypePresent(BlockTypes.chest, chestPos);
-    test.assertItemEntityPresent(Items.concretePowder, chestPos, 2);
-    test.assertEntityNotPresentInArea("falling_block");
+    test.assertBlockPresent(MinecraftBlockTypes.chest, chestPos, true);
+    test.assertItemEntityPresent(MinecraftItemTypes.concretePowder, chestPos, 2, true);
+    test.assertEntityPresentInArea("falling_block", false);
   });
 })
   .maxTicks(TicksPerSecond * 5)
@@ -259,3 +251,15 @@ GameTest.register("BlockTests", "waterlogged_slab", (test) => {
   .tag("suite:java_parity")
   .tag(GameTest.Tags.suiteDisabled) // Slab should be waterlogged
   .maxTicks(TicksPerSecond * 2);
+
+GameTest.register("BlockTests", "dispenser_light_candles", (test) => {
+  const testEx = new GameTestExtensions(test);
+  test.pressButton(new BlockLocation(1, 3, 0));
+  test.pressButton(new BlockLocation(1, 3, 2));
+
+  test.succeedWhen(() => {
+    testEx.assertBlockProperty("lit", 1, new BlockLocation(0, 2, 0));
+    testEx.assertBlockProperty("lit", 1, new BlockLocation(0, 2, 2));
+  });
+})
+  .tag(GameTest.Tags.suiteDefault)

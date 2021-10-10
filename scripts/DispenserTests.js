@@ -1,5 +1,6 @@
-import * as GameTest from "GameTest";
-import { BlockLocation, BlockTypes, Items, ItemStack } from "Minecraft";
+import * as GameTest from "mojang-gametest";
+import { BlockLocation, MinecraftBlockTypes, MinecraftItemTypes, ItemStack } from "mojang-minecraft";
+import GameTestExtensions from "./GameTestExtensions.js";
 
 const dispenserDelay = 5; // Number of ticks to wait for the dispenser to use or dispense an item
 const armorSlotTorso = 1;
@@ -11,12 +12,12 @@ GameTest.register("DispenserTests", "dispenser_shears_sheep", (test) => {
   const sheepId = "minecraft:sheep<minecraft:ageable_grow_up>";
   const entityLoc = new BlockLocation(1, 2, 1);
   test.spawn(sheepId, entityLoc);
-  test.assertEntityPresent(sheepId, entityLoc);
+  test.assertEntityPresent(sheepId, entityLoc, true);
   test.assertEntityHasComponent(sheepId, "minecraft:is_sheared", entityLoc, false);
 
   test.pressButton(new BlockLocation(0, 2, 0));
 
-  test.assertEntityPresent(sheepId, entityLoc);
+  test.assertEntityPresent(sheepId, entityLoc, true);
   test.succeedWhenEntityHasComponent(sheepId, "minecraft:is_sheared", entityLoc, true);
 })
   .maxTicks(threeSecondsInTicks)
@@ -27,11 +28,11 @@ GameTest.register("DispenserTests", "dispenser_shears_mooshroom", (test) => {
   const mooshroomId = "minecraft:mooshroom<minecraft:ageable_grow_up>";
   const entityLoc = new BlockLocation(1, 2, 1);
   test.spawn(mooshroomId, entityLoc);
-  test.assertEntityPresent(mooshroomId, entityLoc);
+  test.assertEntityPresent(mooshroomId, entityLoc, true);
   test.assertEntityHasComponent(mooshroomId, "minecraft:is_sheared", entityLoc, false);
   test.pressButton(new BlockLocation(0, 2, 0));
 
-  test.succeedWhenEntityPresent(cowId, entityLoc);
+  test.succeedWhenEntityPresent(cowId, entityLoc, true);
 })
   .maxTicks(threeSecondsInTicks)
   .tag("suite:java_parity")
@@ -41,12 +42,12 @@ GameTest.register("DispenserTests", "dispenser_shears_snowgolem", (test) => {
   const snowGolemId = "minecraft:snow_golem";
   const entityLoc = new BlockLocation(1, 2, 1);
   test.spawn(snowGolemId, entityLoc);
-  test.assertEntityPresent(snowGolemId, entityLoc);
+  test.assertEntityPresent(snowGolemId, entityLoc, true);
   test.assertEntityHasComponent(snowGolemId, "minecraft:is_sheared", entityLoc, false);
 
   test.pressButton(new BlockLocation(0, 2, 0));
 
-  test.assertEntityPresent(snowGolemId, entityLoc);
+  test.assertEntityPresent(snowGolemId, entityLoc, true);
   test.succeedWhenEntityHasComponent(snowGolemId, "minecraft:is_sheared", entityLoc, true);
 })
   .maxTicks(threeSecondsInTicks)
@@ -63,7 +64,7 @@ GameTest.register("DispenserTests", "dispenser_horsearmor_on_horse", (test) => {
 
   test.pressButton(new BlockLocation(0, 2, 0));
 
-  test.assertEntityPresent(horseId, entityLoc);
+  test.assertEntityPresent(horseId, entityLoc, true);
   test.succeedOnTickWhen(dispenserDelay, () => {
     test.assertContainerEmpty(new BlockLocation(0, 2, 1));
     test.assertEntityHasArmor(horseId, armorSlotTorso, "diamond_horse_armor", 0, entityLoc, true);
@@ -81,7 +82,7 @@ GameTest.register("DispenserTests", "dispenser_saddle_on_pig", (test) => {
 
   test.pressButton(new BlockLocation(0, 2, 0));
 
-  test.assertEntityPresent(pigId, entityLoc);
+  test.assertEntityPresent(pigId, entityLoc, true);
   test.succeedOnTickWhen(dispenserDelay, () => {
     test.assertContainerEmpty(new BlockLocation(0, 2, 1));
     test.assertEntityHasComponent(pigId, "minecraft:is_saddled", entityLoc, true);
@@ -101,7 +102,7 @@ GameTest.register("DispenserTests", "dispenser_saddle_on_horse", (test) => {
 
   test.pressButton(new BlockLocation(0, 2, 0));
 
-  test.assertEntityPresent(horseId, entityLoc);
+  test.assertEntityPresent(horseId, entityLoc, true);
   test.succeedOnTickWhen(dispenserDelay, () => {
     test.assertContainerEmpty(new BlockLocation(0, 2, 1));
     test.assertEntityHasComponent(horseId, "minecraft:is_saddled", entityLoc, true);
@@ -121,7 +122,7 @@ GameTest.register("DispenserTests", "dispenser_chest_on_llama", (test) => {
 
   test.pressButton(new BlockLocation(0, 2, 0));
 
-  test.assertEntityPresent(llamaId, entityLoc);
+  test.assertEntityPresent(llamaId, entityLoc, true);
   test.succeedOnTickWhen(dispenserDelay, () => {
     test.assertContainerEmpty(new BlockLocation(0, 2, 1));
     test.assertEntityHasComponent(llamaId, "minecraft:is_chested", entityLoc, true);
@@ -140,7 +141,7 @@ GameTest.register("DispenserTests", "dispenser_carpet_on_llama", (test) => {
 
   test.pressButton(new BlockLocation(0, 2, 0));
 
-  test.assertEntityPresent(llamaId, entityLoc);
+  test.assertEntityPresent(llamaId, entityLoc, true);
   test.succeedOnTickWhen(dispenserDelay, () => {
     test.assertContainerEmpty(new BlockLocation(0, 2, 1));
     test.assertEntityHasArmor(llamaId, armorSlotTorso, "minecraft:carpet", pinkCarpet, entityLoc, true);
@@ -152,13 +153,13 @@ GameTest.register("DispenserTests", "dispenser_carpet_on_llama", (test) => {
 
 function dispenserMinecartTest(test, entityId) {
   const minecartPos = new BlockLocation(1, 2, 1);
-  test.assertEntityNotPresent(entityId, minecartPos);
+  test.assertEntityPresent(entityId, minecartPos, false);
 
   test.pressButton(new BlockLocation(0, 2, 0));
 
   test.succeedOnTickWhen(dispenserDelay, () => {
     test.assertContainerEmpty(new BlockLocation(0, 2, 1));
-    test.assertEntityPresent(entityId, minecartPos);
+    test.assertEntityPresent(entityId, minecartPos, true);
   });
 }
 
@@ -177,14 +178,14 @@ GameTest.register("DispenserTests", "dispenser_minecart", (test) => {
 GameTest.register("DispenserTests", "dispenser_water", (test) => {
   const waterPos = new BlockLocation(1, 2, 1);
   const dispenserPos = new BlockLocation(0, 2, 1);
-  test.assertBlockTypeNotPresent(BlockTypes.water, waterPos);
-  test.assertContainerContains(new ItemStack(Items.waterBucket, 1, 0), dispenserPos);
+  test.assertBlockPresent(MinecraftBlockTypes.water, waterPos, false);
+  test.assertContainerContains(new ItemStack(MinecraftItemTypes.waterBucket, 1, 0), dispenserPos);
 
   test.pressButton(new BlockLocation(0, 2, 0));
 
   test.succeedOnTickWhen(dispenserDelay, () => {
-    test.assertContainerContains(new ItemStack(Items.bucket, 1, 0), dispenserPos);
-    test.assertBlockTypePresent(BlockTypes.water, waterPos);
+    test.assertContainerContains(new ItemStack(MinecraftItemTypes.bucket, 1, 0), dispenserPos);
+    test.assertBlockPresent(MinecraftBlockTypes.water, waterPos, true);
   });
 })
   .maxTicks(threeSecondsInTicks)
@@ -194,22 +195,23 @@ GameTest.register("DispenserTests", "dispenser_arrow_trap", (test) => {
   const sheepId = "minecraft:sheep<minecraft:ageable_grow_up>";
   const sheepPos = new BlockLocation(4, 2, 2);
   test.spawn(sheepId, sheepPos);
-  test.assertEntityPresent(sheepId, sheepPos);
+  test.assertEntityPresent(sheepId, sheepPos, true);
   test.pullLever(new BlockLocation(2, 3, 2));
-  test.succeedWhenEntityNotPresent(sheepId, sheepPos);
+  test.succeedWhenEntityPresent(sheepId, sheepPos, false);
 })
   .maxTicks(200)
   .tag(GameTest.Tags.suiteDefault);
 
 GameTest.register("DispenserTests", "dispenser_charge_respawn_anchor", (test) => {
+  const testEx = new GameTestExtensions(test);
   test.pressButton(new BlockLocation(0, 2, 0));
   const respawnAnchorPos = new BlockLocation(1, 2, 1);
   const dispenserPos = new BlockLocation(0, 2, 1);
-  test.assertContainerContains(new ItemStack(Items.glowstone, 1, 0), dispenserPos);
+  test.assertContainerContains(new ItemStack(MinecraftItemTypes.glowstone, 1, 0), dispenserPos);
 
-  test.assertBlockState("respawn_anchor_charge", 0, respawnAnchorPos);
+  testEx.assertBlockProperty("respawn_anchor_charge", 0, respawnAnchorPos);
   test.succeedWhen(() => {
-    test.assertBlockState("respawn_anchor_charge", 1, respawnAnchorPos);
+    testEx.assertBlockProperty("respawn_anchor_charge", 1, respawnAnchorPos);
     test.assertContainerEmpty(dispenserPos);
   });
 })
@@ -229,7 +231,7 @@ GameTest.register("DispenserTests", "dispenser_fire", (test) => {
 
   test.succeedOnTickWhen(dispenserDelay, () => {
     for (const pos of firePositions) {
-      test.assertBlockTypePresent(BlockTypes.fire, pos);
+      test.assertBlockPresent(MinecraftBlockTypes.fire, pos, true);
     }
   });
 })

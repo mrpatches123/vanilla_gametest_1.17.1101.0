@@ -1,5 +1,6 @@
-import * as GameTest from "GameTest";
-import { BlockLocation, Location, BlockTypes, ItemStack } from "Minecraft";
+import * as GameTest from "mojang-gametest";
+import { BlockLocation, Location, MinecraftBlockTypes, ItemStack } from "mojang-minecraft";
+import GameTestExtensions from "./GameTestExtensions.js";
 
 GameTest.register("PistonTests", "honey_block_entity_drag_sideways", (test) => {
   const startPos = new BlockLocation(3, 4, 1);
@@ -7,7 +8,7 @@ GameTest.register("PistonTests", "honey_block_entity_drag_sideways", (test) => {
   const pullLeverPos = new BlockLocation(0, 3, 0);
   const chickenEntityType = "minecraft:chicken";
 
-  test.assertEntityNotPresent(chickenEntityType, endPos);
+  test.assertEntityPresent(chickenEntityType, endPos, false);
   test.spawn(chickenEntityType, startPos);
   test
     .startSequence()
@@ -15,7 +16,7 @@ GameTest.register("PistonTests", "honey_block_entity_drag_sideways", (test) => {
       test.pullLever(pullLeverPos);
     })
     .thenWait(() => {
-      test.assertEntityPresent(chickenEntityType, endPos);
+      test.assertEntityPresent(chickenEntityType, endPos, true);
     })
     .thenSucceed();
 }).tag(GameTest.Tags.suiteDefault);
@@ -31,15 +32,15 @@ GameTest.register("PistonTests", "quasiconnectivity", (test) => {
   test
     .startSequence()
     .thenWaitWithDelay(3, () => {
-      test.assertBlockTypePresent(BlockTypes.stone, topStartPos);
-      test.assertBlockTypePresent(BlockTypes.stone, bottomStartPos);
+      test.assertBlockPresent(MinecraftBlockTypes.stone, topStartPos, true);
+      test.assertBlockPresent(MinecraftBlockTypes.stone, bottomStartPos, true);
     })
     .thenExecute(() => {
       test.pullLever(pullLever);
     })
     .thenWaitWithDelay(3, () => {
-      test.assertBlockTypePresent(BlockTypes.stone, topEndPos);
-      test.assertBlockTypePresent(BlockTypes.stone, bottomEndPos);
+      test.assertBlockPresent(MinecraftBlockTypes.stone, topEndPos, true);
+      test.assertBlockPresent(MinecraftBlockTypes.stone, bottomEndPos, true);
     })
     .thenSucceed();
 })
@@ -59,16 +60,16 @@ GameTest.register("PistonTests", "quasiconnectivity_bedrock", (test) => {
     .startSequence()
     .thenIdle(6) //it's not possible to time it exactly due to redstone differences then you can just pull the lever, wait 6 ticks, assert, pull, wait 6, assert.
     .thenExecute(() => {
-      test.assertBlockTypePresent(BlockTypes.stone, topStartPos);
-      test.assertBlockTypePresent(BlockTypes.stone, bottomStartPos);
+      test.assertBlockPresent(MinecraftBlockTypes.stone, topStartPos, true);
+      test.assertBlockPresent(MinecraftBlockTypes.stone, bottomStartPos, true);
     })
     .thenExecute(() => {
       test.pullLever(pullLeverPos);
     })
     .thenIdle(6)
     .thenExecute(() => {
-      test.assertBlockTypePresent(BlockTypes.stone, topEndPos);
-      test.assertBlockTypePresent(BlockTypes.stone, bottomEndPos);
+      test.assertBlockPresent(MinecraftBlockTypes.stone, topEndPos, true);
+      test.assertBlockPresent(MinecraftBlockTypes.stone, bottomEndPos, true);
     })
     .thenSucceed();
 }).tag(GameTest.Tags.suiteDefault);
@@ -76,17 +77,17 @@ GameTest.register("PistonTests", "quasiconnectivity_bedrock", (test) => {
 GameTest.register("PistonTests", "redstone_simple_vertical_bud", (test) => {
   const blockPos = new BlockLocation(0, 5, 0);
   const setblockPos = new BlockLocation(0, 1, 0);
-  test.setBlockType(BlockTypes.stone, setblockPos);
+  test.setBlockType(MinecraftBlockTypes.stone, setblockPos);
 
   test
     .startSequence()
     .thenIdle(3)
     .thenWait(() => {
-      test.assertBlockTypePresent(BlockTypes.redstoneBlock, blockPos);
+      test.assertBlockPresent(MinecraftBlockTypes.redstoneBlock, blockPos, true);
     })
     .thenIdle(1)
     .thenWait(() => {
-      test.assertBlockTypePresent(BlockTypes.air, blockPos);
+      test.assertBlockPresent(MinecraftBlockTypes.air, blockPos, true);
     })
     .thenSucceed();
 })
@@ -96,17 +97,17 @@ GameTest.register("PistonTests", "redstone_simple_vertical_bud", (test) => {
 GameTest.register("PistonTests", "redstone_simple_horizontal_bud", (test) => {
   const extendedPos = new BlockLocation(3, 2, 0);
   const retractedPos = new BlockLocation(2, 2, 0);
-  test.setBlockType(BlockTypes.stone, new BlockLocation(0, 1, 0));
+  test.setBlockType(MinecraftBlockTypes.stone, new BlockLocation(0, 1, 0));
 
   test
     .startSequence()
     .thenWaitWithDelay(3, () => {
-      test.assertBlockTypePresent(BlockTypes.redstoneBlock, extendedPos);
-      test.assertBlockTypePresent(BlockTypes.air, retractedPos);
+      test.assertBlockPresent(MinecraftBlockTypes.redstoneBlock, extendedPos, true);
+      test.assertBlockPresent(MinecraftBlockTypes.air, retractedPos, true);
     })
     .thenWaitWithDelay(3, () => {
-      test.assertBlockTypePresent(BlockTypes.air, extendedPos);
-      test.assertBlockTypePresent(BlockTypes.redstoneBlock, retractedPos);
+      test.assertBlockPresent(MinecraftBlockTypes.air, extendedPos, true);
+      test.assertBlockPresent(MinecraftBlockTypes.redstoneBlock, retractedPos, true);
     })
     .thenSucceed();
 })
@@ -120,19 +121,19 @@ GameTest.register("PistonTests", "redstone_bud", (test) => {
   test
     .startSequence()
     .thenWaitWithDelay(3, () => {
-      test.assertBlockTypePresent(BlockTypes.redstoneBlock, blockPos);
+      test.assertBlockPresent(MinecraftBlockTypes.redstoneBlock, blockPos, true);
     })
     .thenWaitWithDelay(5, () => {
-      test.assertBlockTypePresent(BlockTypes.air, blockPos);
+      test.assertBlockPresent(MinecraftBlockTypes.air, blockPos, true);
     })
     .thenWait(() => {
       test.pullLever(pullLeverPos);
     })
     .thenWaitWithDelay(3, () => {
-      test.assertBlockTypePresent(BlockTypes.redstoneBlock, blockPos);
+      test.assertBlockPresent(MinecraftBlockTypes.redstoneBlock, blockPos, true);
     })
     .thenWaitWithDelay(5, () => {
-      test.assertBlockTypePresent(BlockTypes.air, blockPos);
+      test.assertBlockPresent(MinecraftBlockTypes.air, blockPos, true);
     })
     .thenSucceed();
 })
@@ -144,19 +145,19 @@ GameTest.register("PistonTests", "slime_block_pull", (test) => {
   const targetPos = new BlockLocation(3, 3, 0);
   const pullLeverPos = new BlockLocation(0, 4, 0);
 
-  test.assertBlockTypeNotPresent(BlockTypes.planks, targetPos);
+  test.assertBlockPresent(MinecraftBlockTypes.planks, targetPos, false);
   test.pullLever(pullLeverPos);
-  test.succeedWhenBlockTypePresent(BlockTypes.planks, targetPos);
+  test.succeedWhenBlockTypePresent(MinecraftBlockTypes.planks, targetPos, true);
 }).tag(GameTest.Tags.suiteDefault);
 
 GameTest.register("PistonTests", "normal_extend", (test) => {
   const targetPos = new BlockLocation(3, 2, 0);
   const pullLeverPos = new BlockLocation(0, 3, 0);
 
-  test.assertBlockTypeNotPresent(BlockTypes.stone, targetPos);
+  test.assertBlockPresent(MinecraftBlockTypes.stone, targetPos, false);
   test.pullLever(pullLeverPos);
   test.succeedOnTickWhen(3, () => {
-    test.assertBlockTypePresent(BlockTypes.stone, targetPos);
+    test.assertBlockPresent(MinecraftBlockTypes.stone, targetPos, true);
   });
 }).tag(GameTest.Tags.suiteDefault);
 
@@ -165,21 +166,21 @@ GameTest.register("PistonTests", "normal_extend_retract", (test) => {
   const retractedPos = new BlockLocation(2, 2, 0);
   const pullLeverPos = new BlockLocation(0, 3, 0);
 
-  test.assertBlockTypeNotPresent(BlockTypes.stone, extendedPos);
+  test.assertBlockPresent(MinecraftBlockTypes.stone, extendedPos, false);
   test.pullLever(pullLeverPos);
 
   test
     .startSequence()
     .thenWaitWithDelay(3, () => {
-      test.assertBlockTypePresent(BlockTypes.stone, extendedPos);
-      test.assertBlockTypePresent(BlockTypes.pistonarmcollision, retractedPos);
+      test.assertBlockPresent(MinecraftBlockTypes.stone, extendedPos, true);
+      test.assertBlockPresent(MinecraftBlockTypes.pistonarmcollision, retractedPos, true);
     })
     .thenExecute(() => {
       test.pullLever(pullLeverPos);
     })
     .thenWaitWithDelay(1, () => {
-      test.assertBlockTypePresent(BlockTypes.air, retractedPos);
-      test.assertBlockTypePresent(BlockTypes.stone, extendedPos);
+      test.assertBlockPresent(MinecraftBlockTypes.air, retractedPos, true);
+      test.assertBlockPresent(MinecraftBlockTypes.stone, extendedPos, true);
     })
     .thenSucceed();
 })
@@ -192,7 +193,7 @@ GameTest.register("PistonTests", "normal_extend_retract_bedrock", (test) => {
   const retractedPos = new BlockLocation(2, 2, 0);
   const pullLeverPos = new BlockLocation(0, 3, 0);
 
-  test.assertBlockTypeNotPresent(BlockTypes.stone, extendedPos);
+  test.assertBlockPresent(MinecraftBlockTypes.stone, extendedPos, false);
   test.pullLever(pullLeverPos);
 
   //it's not possible to time it exactly due to redstone differences, so just validate assert can pass before given delay.
@@ -200,16 +201,16 @@ GameTest.register("PistonTests", "normal_extend_retract_bedrock", (test) => {
     .startSequence()
     .thenIdle(6)
     .thenExecute(() => {
-      test.assertBlockTypePresent(BlockTypes.stone, extendedPos);
-      test.assertBlockTypePresent(BlockTypes.pistonarmcollision, retractedPos);
+      test.assertBlockPresent(MinecraftBlockTypes.stone, extendedPos, true);
+      test.assertBlockPresent(MinecraftBlockTypes.pistonarmcollision, retractedPos, true);
     })
     .thenExecute(() => {
       test.pullLever(pullLeverPos);
     })
     .thenIdle(4)
     .thenExecute(() => {
-      test.assertBlockTypePresent(BlockTypes.air, retractedPos);
-      test.assertBlockTypePresent(BlockTypes.stone, extendedPos);
+      test.assertBlockPresent(MinecraftBlockTypes.air, retractedPos, true);
+      test.assertBlockPresent(MinecraftBlockTypes.stone, extendedPos, true);
     })
     .thenSucceed();
 })
@@ -220,10 +221,10 @@ GameTest.register("PistonTests", "sticky_extend", (test) => {
   const targetPos = new BlockLocation(3, 2, 0);
   const pullLeverPos = new BlockLocation(0, 3, 0);
 
-  test.assertBlockTypeNotPresent(BlockTypes.stone, targetPos);
+  test.assertBlockPresent(MinecraftBlockTypes.stone, targetPos, false);
   test.pullLever(pullLeverPos);
   test.succeedOnTickWhen(3, () => {
-    test.assertBlockTypePresent(BlockTypes.stone, targetPos);
+    test.assertBlockPresent(MinecraftBlockTypes.stone, targetPos, true);
   });
 }).tag(GameTest.Tags.suiteDefault);
 
@@ -232,21 +233,21 @@ GameTest.register("PistonTests", "sticky_extend_retract", (test) => {
   const retractedPos = new BlockLocation(2, 2, 0);
   const pullLeverPos = new BlockLocation(0, 3, 0);
 
-  test.assertBlockTypeNotPresent(BlockTypes.stone, extendedPos);
+  test.assertBlockPresent(MinecraftBlockTypes.stone, extendedPos, false);
   test.pullLever(pullLeverPos);
 
   test
     .startSequence()
     .thenWaitWithDelay(3, () => {
-      test.assertBlockTypePresent(BlockTypes.stone, extendedPos);
-      test.assertBlockTypePresent(BlockTypes.stickypistonarmcollision, retractedPos);
+      test.assertBlockPresent(MinecraftBlockTypes.stone, extendedPos, true);
+      test.assertBlockPresent(MinecraftBlockTypes.stickypistonarmcollision, retractedPos, true);
     })
     .thenExecute(() => {
       test.pullLever(pullLeverPos);
     })
     .thenWaitWithDelay(3, () => {
-      test.assertBlockTypePresent(BlockTypes.stone, retractedPos);
-      test.assertBlockTypePresent(BlockTypes.air, extendedPos);
+      test.assertBlockPresent(MinecraftBlockTypes.stone, retractedPos, true);
+      test.assertBlockPresent(MinecraftBlockTypes.air, extendedPos, true);
     })
     .thenSucceed();
 })
@@ -259,7 +260,7 @@ GameTest.register("PistonTests", "sticky_extend_retract_bedrock", (test) => {
   const retractedPos = new BlockLocation(2, 2, 0);
   const pullLeverPos = new BlockLocation(0, 3, 0);
 
-  test.assertBlockTypeNotPresent(BlockTypes.stone, extendedPos);
+  test.assertBlockPresent(MinecraftBlockTypes.stone, extendedPos, false);
   test.pullLever(pullLeverPos);
 
   //it's not possible to time it exactly due to redstone differences, so just validate assert can pass before given delay.
@@ -267,16 +268,16 @@ GameTest.register("PistonTests", "sticky_extend_retract_bedrock", (test) => {
     .startSequence()
     .thenIdle(6)
     .thenExecute(() => {
-      test.assertBlockTypePresent(BlockTypes.stone, extendedPos);
-      test.assertBlockTypePresent(BlockTypes.stickypistonarmcollision, retractedPos);
+      test.assertBlockPresent(MinecraftBlockTypes.stone, extendedPos, true);
+      test.assertBlockPresent(MinecraftBlockTypes.stickypistonarmcollision, retractedPos, true);
     })
     .thenExecute(() => {
       test.pullLever(pullLeverPos);
     })
     .thenIdle(6)
     .thenExecute(() => {
-      test.assertBlockTypePresent(BlockTypes.stone, retractedPos);
-      test.assertBlockTypePresent(BlockTypes.air, extendedPos);
+      test.assertBlockPresent(MinecraftBlockTypes.stone, retractedPos, true);
+      test.assertBlockPresent(MinecraftBlockTypes.air, extendedPos, true);
     })
     .thenSucceed();
 })
@@ -289,13 +290,13 @@ GameTest.register("PistonTests", "push_limit", (test) => {
   const pullLeverPos = new BlockLocation(1, 2, 0);
   const underLimitExtendedTip = new BlockLocation(0, 2, 7);
 
-  test.assertBlockTypePresent(BlockTypes.goldBlock, underLimitTip);
-  test.assertBlockTypePresent(BlockTypes.emeraldBlock, overLimitTip);
+  test.assertBlockPresent(MinecraftBlockTypes.goldBlock, underLimitTip, true);
+  test.assertBlockPresent(MinecraftBlockTypes.emeraldBlock, overLimitTip, true);
   test.pullLever(pullLeverPos);
 
   test.succeedOnTickWhen(3, () => {
-    test.assertBlockTypePresent(BlockTypes.goldBlock, underLimitExtendedTip);
-    test.assertBlockTypePresent(BlockTypes.emeraldBlock, overLimitTip);
+    test.assertBlockPresent(MinecraftBlockTypes.goldBlock, underLimitExtendedTip, true);
+    test.assertBlockPresent(MinecraftBlockTypes.emeraldBlock, overLimitTip, true);
   });
 }).tag(GameTest.Tags.suiteDefault);
 
@@ -308,15 +309,15 @@ GameTest.register("PistonTests", "block_leave", (test) => {
   test
     .startSequence()
     .thenWaitWithDelay(3, () => {
-      test.assertBlockTypePresent(BlockTypes.concrete, extended);
-      test.assertBlockTypePresent(BlockTypes.air, retracted);
+      test.assertBlockPresent(MinecraftBlockTypes.concrete, extended, true);
+      test.assertBlockPresent(MinecraftBlockTypes.air, retracted, true);
     })
     .thenExecuteAfter(3, () => {
       test.pulseRedstone(trigger, 2);
     })
     .thenWaitWithDelay(5, () => {
-      test.assertBlockTypePresent(BlockTypes.concrete, retracted);
-      test.assertBlockTypePresent(BlockTypes.air, extended);
+      test.assertBlockPresent(MinecraftBlockTypes.concrete, retracted, true);
+      test.assertBlockPresent(MinecraftBlockTypes.air, extended, true);
     })
     .thenSucceed();
 })
@@ -333,16 +334,16 @@ GameTest.register("PistonTests", "block_leave_bedrock", (test) => {
     .startSequence()
     .thenIdle(2)
     .thenWait(() => {
-      test.assertBlockTypePresent(BlockTypes.concrete, extended);
-      test.assertBlockTypePresent(BlockTypes.air, retracted);
+      test.assertBlockPresent(MinecraftBlockTypes.concrete, extended, true);
+      test.assertBlockPresent(MinecraftBlockTypes.air, retracted, true);
     })
     .thenExecuteAfter(3, () => {
       test.pulseRedstone(trigger, 2);
     })
     .thenIdle(6)
     .thenWait(() => {
-      test.assertBlockTypePresent(BlockTypes.concrete, retracted);
-      test.assertBlockTypePresent(BlockTypes.air, extended);
+      test.assertBlockPresent(MinecraftBlockTypes.concrete, retracted, true);
+      test.assertBlockPresent(MinecraftBlockTypes.air, extended, true);
     })
     .thenSucceed();
 }).tag(GameTest.Tags.suiteDefault);
@@ -354,30 +355,30 @@ GameTest.register("PistonTests", "update_order", (test) => {
   const posD = new BlockLocation(1, 1, 0);
 
   const trigger = new BlockLocation(6, 2, 2);
-  test.setBlockType(trigger, BlockTypes.greenWool);
+  test.setBlockType(trigger, MinecraftBlockTypes.greenWool);
 
   test
     .startSequence()
     .thenWaitWithDelay(4, () => {
-      test.assertBlockTypePresent(BlockTypes.yellowWool, posB);
+      test.assertBlockPresent(MinecraftBlockTypes.yellowWool, posB, true);
     })
     .thenExecuteAfter(4, () => {
-      test.setBlockType(trigger, BlockTypes.blueWool);
+      test.setBlockType(trigger, MinecraftBlockTypes.blueWool);
     })
     .thenWaitWithDelay(6, () => {
-      test.assertBlockTypePresent(BlockTypes.yellowWool, posC);
+      test.assertBlockPresent(MinecraftBlockTypes.yellowWool, posC, true);
     })
     .thenExecuteAfter(4, () => {
-      test.setBlockType(trigger, BlockTypes.purpleWool);
+      test.setBlockType(trigger, MinecraftBlockTypes.purpleWool);
     })
     .thenWaitWithDelay(6, () => {
-      test.assertBlockTypePresent(BlockTypes.yellowWool, posD);
+      test.assertBlockPresent(MinecraftBlockTypes.yellowWool, posD, true);
     })
     .thenExecuteAfter(4, () => {
-      test.setBlockType(trigger, BlockTypes.cyanWool);
+      test.setBlockType(trigger, MinecraftBlockTypes.cyanWool);
     })
     .thenWaitWithDelay(6, () => {
-      test.assertBlockTypePresent(BlockTypes.yellowWool, posA);
+      test.assertBlockPresent(MinecraftBlockTypes.yellowWool, posA, true);
     })
     .thenSucceed();
 })
@@ -392,36 +393,36 @@ GameTest.register("PistonTests", "update_order_bedrock", (test) => {
   const posD = new BlockLocation(1, 1, 0);
 
   const trigger = new BlockLocation(6, 2, 2);
-  test.setBlockType(BlockTypes.greenGlazedTerracotta, trigger);
+  test.setBlockType(MinecraftBlockTypes.greenGlazedTerracotta, trigger);
   test
     .startSequence()
     .thenIdle(5)
     .thenWait(() => {
-      test.assertBlockTypePresent(BlockTypes.wool, posB);
+      test.assertBlockPresent(MinecraftBlockTypes.wool, posB, true);
     })
     .thenIdle(4)
     .thenWait(() => {
-      test.setBlockType(BlockTypes.blueGlazedTerracotta, trigger);
+      test.setBlockType(MinecraftBlockTypes.blueGlazedTerracotta, trigger);
     })
     .thenIdle(6)
     .thenWait(() => {
-      test.assertBlockTypePresent(BlockTypes.wool, posC);
+      test.assertBlockPresent(MinecraftBlockTypes.wool, posC, true);
     })
     .thenIdle(4)
     .thenWait(() => {
-      test.setBlockType(BlockTypes.purpleGlazedTerracotta, trigger);
+      test.setBlockType(MinecraftBlockTypes.purpleGlazedTerracotta, trigger);
     })
     .thenIdle(6)
     .thenWait(() => {
-      test.assertBlockTypePresent(BlockTypes.wool, posD);
+      test.assertBlockPresent(MinecraftBlockTypes.wool, posD, true);
     })
     .thenIdle(4)
     .thenWait(() => {
-      test.setBlockType(BlockTypes.cyanGlazedTerracotta, trigger);
+      test.setBlockType(MinecraftBlockTypes.cyanGlazedTerracotta, trigger);
     })
     .thenIdle(6)
     .thenWait(() => {
-      test.assertBlockTypePresent(BlockTypes.wool, posA);
+      test.assertBlockPresent(MinecraftBlockTypes.wool, posA, true);
     })
     .thenSucceed();
 })
@@ -435,16 +436,16 @@ GameTest.register("PistonTests", "double_extender", (test) => {
   const blockPresentPosB = new BlockLocation(0, 2, 4);
 
   test.pullLever(pullLeverPos);
-  test.assertBlockTypePresent(BlockTypes.emeraldBlock, blockPresentPosA);
+  test.assertBlockPresent(MinecraftBlockTypes.emeraldBlock, blockPresentPosA, true);
 
   test
     .startSequence()
     .thenWaitWithDelay(11, () => {
-      test.assertBlockTypePresent(BlockTypes.emeraldBlock, blockPresentPosB);
+      test.assertBlockPresent(MinecraftBlockTypes.emeraldBlock, blockPresentPosB, true);
       test.pullLever(pullLeverPos);
     })
     .thenWaitWithDelay(12, () => {
-      test.assertBlockTypePresent(BlockTypes.emeraldBlock, blockPresentPosA);
+      test.assertBlockPresent(MinecraftBlockTypes.emeraldBlock, blockPresentPosA, true);
     })
     .thenSucceed();
 })
@@ -457,19 +458,19 @@ GameTest.register("PistonTests", "double_extender_bedrock", (test) => {
   const blockPresentPosB = new BlockLocation(0, 2, 4);
 
   test.pullLever(pullLeverPos);
-  test.assertBlockTypePresent(BlockTypes.emeraldBlock, blockPresentPosA);
+  test.assertBlockPresent(MinecraftBlockTypes.emeraldBlock, blockPresentPosA, true);
 
   //it's not possible to time it exactly due to redstone differences, so just validate assert can pass before given delay.
   test
     .startSequence()
     .thenIdle(17)
     .thenExecute(() => {
-      test.assertBlockTypePresent(BlockTypes.emeraldBlock, blockPresentPosB);
+      test.assertBlockPresent(MinecraftBlockTypes.emeraldBlock, blockPresentPosB, true);
       test.pullLever(pullLeverPos);
     })
     .thenIdle(18)
     .thenExecute(() => {
-      test.assertBlockTypePresent(BlockTypes.emeraldBlock, blockPresentPosA);
+      test.assertBlockPresent(MinecraftBlockTypes.emeraldBlock, blockPresentPosA, true);
     })
     .thenSucceed();
 })
@@ -490,10 +491,10 @@ GameTest.register("PistonTests", "triple_extender", (test) => {
     .startSequence()
     .thenIdle(30)
     .thenWait(() => {
-      test.assertBlockTypePresent(BlockTypes.stickyPiston, assertBlockPresentA);
-      test.assertBlockTypePresent(BlockTypes.stickyPiston, assertBlockPresentB);
-      test.assertBlockTypePresent(BlockTypes.stickyPiston, assertBlockPresentC);
-      test.assertBlockTypePresent(BlockTypes.concrete, extended);
+      test.assertBlockPresent(MinecraftBlockTypes.stickyPiston, assertBlockPresentA, true);
+      test.assertBlockPresent(MinecraftBlockTypes.stickyPiston, assertBlockPresentB, true);
+      test.assertBlockPresent(MinecraftBlockTypes.stickyPiston, assertBlockPresentC, true);
+      test.assertBlockPresent(MinecraftBlockTypes.concrete, extended, true);
     })
     .thenIdle(20)
     .thenWait(() => {
@@ -501,10 +502,10 @@ GameTest.register("PistonTests", "triple_extender", (test) => {
     })
     .thenIdle(42)
     .thenWait(() => {
-      test.assertBlockTypePresent(BlockTypes.stickyPiston, new assertBlockPresentA());
-      test.assertBlockTypePresent(BlockTypes.stickyPiston, new assertBlockPresentB());
-      test.assertBlockTypePresent(BlockTypes.stickyPiston, new assertBlockPresentC());
-      test.assertBlockTypePresent(BlockTypes.concrete, retracted);
+      test.assertBlockPresent(MinecraftBlockTypes.stickyPiston, new assertBlockPresentA(), true);
+      test.assertBlockPresent(MinecraftBlockTypes.stickyPiston, new assertBlockPresentB(), true);
+      test.assertBlockPresent(MinecraftBlockTypes.stickyPiston, new assertBlockPresentC(), true);
+      test.assertBlockPresent(MinecraftBlockTypes.concrete, retracted, true);
     })
     .thenSucceed();
 })
@@ -519,47 +520,42 @@ GameTest.register("PistonTests", "triple_extender_bedrock", (test) => {
   const assertBlockPresentB = new BlockLocation(0, 6, 4);
   const assertBlockPresentC = new BlockLocation(0, 5, 4);
   const assertBlockPresentD = new BlockLocation(0, 3, 4);
-
   test.pressButton(trigger);
   test
     .startSequence()
-    .thenIdle(33)
-    .thenExecute(() => {
-      test.assertBlockTypePresent(BlockTypes.stickyPiston, assertBlockPresentA);
-      test.assertBlockTypePresent(BlockTypes.stickyPiston, assertBlockPresentC);
-      test.assertBlockTypePresent(BlockTypes.stickyPiston, assertBlockPresentD);
-      test.assertBlockTypePresent(BlockTypes.concrete, extended);
+    .thenWait(() => {
+      test.assertBlockPresent(MinecraftBlockTypes.stickyPiston, assertBlockPresentA, true);
+      test.assertBlockPresent(MinecraftBlockTypes.stickyPiston, assertBlockPresentC, true);
+      test.assertBlockPresent(MinecraftBlockTypes.stickyPiston, assertBlockPresentD, true);
+      test.assertBlockPresent(MinecraftBlockTypes.concrete, extended, true);
     })
-    .thenIdle(1)
-    .thenExecute(() => {
-      test.pressButton(trigger);
-    })
-    .thenIdle(45)
-    .thenExecute(() => {
-      test.assertBlockTypePresent(BlockTypes.stickyPiston, assertBlockPresentA);
-      test.assertBlockTypePresent(BlockTypes.stickyPiston, assertBlockPresentB);
-      test.assertBlockTypePresent(BlockTypes.stickyPiston, assertBlockPresentC);
-      test.assertBlockTypePresent(BlockTypes.concrete, retracted);
+    .thenWait(() => {
+      test.assertBlockPresent(MinecraftBlockTypes.stickyPiston, assertBlockPresentA, true);
+      test.assertBlockPresent(MinecraftBlockTypes.stickyPiston, assertBlockPresentB, true);
+      test.assertBlockPresent(MinecraftBlockTypes.stickyPiston, assertBlockPresentC, true);
+      test.assertBlockPresent(MinecraftBlockTypes.concrete, retracted, true);
     })
     .thenSucceed();
 })
-  .tag(GameTest.Tags.suiteDisabled) // Disable this test after it is not passing 100% in Main.
-  .maxTicks(300);
+  .setupTicks(20)
+  .tag(GameTest.Tags.suiteDefault)
+  .maxTicks(100);
 
 GameTest.register("PistonTests", "monostable", (test) => {
+  const testEx = new GameTestExtensions(test);
   const lampPos = new BlockLocation(0, 3, 5);
   const pullLeverPos = new BlockLocation(0, 2, 0);
 
-  test.assertBlockState("redstone_signal", 0, lampPos);
+  testEx.assertBlockProperty("redstone_signal", 0, lampPos);
   test.pullLever(pullLeverPos);
 
   test
     .startSequence()
     .thenWaitWithDelay(2, () => {
-      test.assertBlockState("redstone_signal", 1, lampPos);
+      testEx.assertBlockProperty("redstone_signal", 1, lampPos);
     })
     .thenWaitWithDelay(4, () => {
-      test.assertBlockState("redstone_signal", 0, lampPos);
+      testEx.assertBlockProperty("redstone_signal", 0, lampPos);
     })
     .thenSucceed();
 })
@@ -595,13 +591,14 @@ GameTest.register("PistonTests", "instant_retraction", (test) => {
   const airPos = new BlockLocation(2, 1, 1);
   const concretePos = new BlockLocation(0, 1, 3);
 
-  test.setBlockType(BlockTypes.air, airPos);
+  test.setBlockType(MinecraftBlockTypes.air, airPos);
   test.succeedOnTickWhen(3, () => {
-    test.assertBlockTypePresent(BlockTypes.concrete, concretePos);
+    test.assertBlockPresent(MinecraftBlockTypes.concrete, concretePos, true);
   });
 }).tag(GameTest.Tags.suiteDefault);
 
 GameTest.register("PistonTests", "instant_repeater", (test) => {
+  const testEx = new GameTestExtensions(test);
   const triggerPos = new BlockLocation(0, 3, 0);
   const outputPos = new BlockLocation(0, 3, 25);
   test.pullLever(triggerPos);
@@ -609,14 +606,14 @@ GameTest.register("PistonTests", "instant_repeater", (test) => {
   test
     .startSequence()
     .thenWaitWithDelay(1, () => {
-      test.assertBlockState("redstone_signal", 1, outputPos);
+      testEx.assertBlockProperty("redstone_signal", 1, outputPos);
     })
     .thenIdle(10) // relaxation time
     .thenExecute(() => {
       test.pullLever(triggerPos);
     })
     .thenWaitWithDelay(5, () => {
-      test.assertBlockState("redstone_signal", 0, outputPos);
+      testEx.assertBlockProperty("redstone_signal", 0, outputPos);
     })
     .thenSucceed();
 })
@@ -632,7 +629,7 @@ GameTest.register("PistonTests", "entity_backside", (test) => {
     .startSequence()
     .thenIdle(30)
     .thenWait(() => {
-      test.assertBlockTypeNotPresent(BlockTypes.redstoneLamp, lampFailPos);
+      test.assertBlockPresent(MinecraftBlockTypes.redstoneLamp, lampFailPos, false);
     })
     .thenSucceed();
 }).tag(GameTest.Tags.suiteDefault);
@@ -646,7 +643,7 @@ GameTest.register("PistonTests", "redstone_matrix", (test) => {
     .startSequence()
     .thenIdle(30)
     .thenWait(() => {
-      test.assertBlockTypePresent(BlockTypes.redstoneWire, wirePos);
+      test.assertBlockPresent(MinecraftBlockTypes.redstoneWire, wirePos, true);
     })
     .thenSucceed();
 }).tag(GameTest.Tags.suiteDefault);
@@ -662,15 +659,15 @@ GameTest.register("PistonTests", "one_tick_pulse", (test) => {
     .startSequence()
 
     .thenWaitWithDelay(2, () => {
-      test.assertBlockTypePresent(BlockTypes.stainedGlass, extendedPos);
+      test.assertBlockPresent(MinecraftBlockTypes.stainedGlass, extendedPos, true);
     })
     .thenIdle(30)
     .thenWait(() => {
       test.pressButton(pressButtonPos);
     })
     .thenWaitWithDelay(4, () => {
-      test.assertBlockTypePresent(BlockTypes.stainedGlass, retractedPos);
-      test.assertBlockTypePresent(BlockTypes.air, extendedPos);
+      test.assertBlockPresent(MinecraftBlockTypes.stainedGlass, retractedPos, true);
+      test.assertBlockPresent(MinecraftBlockTypes.air, extendedPos, true);
     })
     .thenSucceed();
 })
@@ -688,7 +685,7 @@ GameTest.register("PistonTests", "one_tick_pulse_bedrock", (test) => {
     .startSequence()
     .thenIdle(2)
     .thenWait(() => {
-      test.assertBlockTypePresent(BlockTypes.stainedGlass, extendedPos);
+      test.assertBlockPresent(MinecraftBlockTypes.stainedGlass, extendedPos, true);
     })
     .thenIdle(30)
     .thenWait(() => {
@@ -696,8 +693,8 @@ GameTest.register("PistonTests", "one_tick_pulse_bedrock", (test) => {
     })
     .thenIdle(4)
     .thenWait(() => {
-      test.assertBlockTypePresent(BlockTypes.stainedGlass, retractedPos);
-      test.assertBlockTypePresent(BlockTypes.air, extendedPos);
+      test.assertBlockPresent(MinecraftBlockTypes.stainedGlass, retractedPos, true);
+      test.assertBlockPresent(MinecraftBlockTypes.air, extendedPos, true);
     })
     .thenSucceed();
 }).tag(GameTest.Tags.suiteDefault);
@@ -720,13 +717,14 @@ GameTest.register("PistonTests", "backside", (test) => {
     .thenIdle(30)
     .thenWait(() => {
       for (const buttonPos of buttonsBlockPos) {
-        test.assertBlockTypePresent(BlockTypes.stoneButton, buttonPos);
+        test.assertBlockPresent(MinecraftBlockTypes.stoneButton, buttonPos, true);
       }
     })
     .thenSucceed();
 }).tag(GameTest.Tags.suiteDefault);
 
 GameTest.register("PistonTests", "observer_retraction_timing", (test) => {
+  const testEx = new GameTestExtensions(test);
   const levelPos = new BlockLocation(3, 2, 2);
   const observerPos = new BlockLocation(2, 2, 1);
   test.pullLever(levelPos);
@@ -734,11 +732,11 @@ GameTest.register("PistonTests", "observer_retraction_timing", (test) => {
     .startSequence()
     .thenIdle(2)
     .thenExecute(() => {
-      test.assertBlockState("powered_bit", 0, observerPos);
+      testEx.assertBlockProperty("powered_bit", 0, observerPos);
     })
     .thenIdle(1)
     .thenExecute(() => {
-      test.assertBlockState("powered_bit", 1, observerPos);
+      testEx.assertBlockProperty("powered_bit", 1, observerPos);
     })
     .thenSucceed();
 }).tag(GameTest.Tags.suiteDefault);
@@ -753,8 +751,8 @@ GameTest.register("PistonTests", "random_tick_forcer", (test) => {
     .startSequence()
     .thenIdle(20)
     .thenExecute(() => {
-      test.assertBlockTypePresent(BlockTypes.chorusFlower, flower);
-      test.assertBlockTypePresent(BlockTypes.air, aboveFlower);
+      test.assertBlockPresent(MinecraftBlockTypes.chorusFlower, flower, true);
+      test.assertBlockPresent(MinecraftBlockTypes.air, aboveFlower, true);
     })
     .thenSucceed();
 })
@@ -772,8 +770,8 @@ GameTest.register("PistonTests", "random_tick_forcer_bedrock", (test) => {
     .startSequence()
     .thenIdle(10)
     .thenExecute(() => {
-      test.assertBlockTypePresent(BlockTypes.chorusFlower, flower);
-      test.assertBlockTypePresent(BlockTypes.air, aboveFlower);
+      test.assertBlockPresent(MinecraftBlockTypes.chorusFlower, flower, true);
+      test.assertBlockPresent(MinecraftBlockTypes.air, aboveFlower, true);
     })
     .thenSucceed();
 }).tag(GameTest.Tags.suiteDisabled);
@@ -786,8 +784,8 @@ GameTest.register("PistonTests", "honey_block_entity_drag_down", (test) => {
   const entityNotTouchingTypePos = new Location(1.5, 3.5, 1.5);
 
   test.spawn(cowId, entityTypePos);
-  test.assertEntityTouching(cowId, entityTouchingPos);
-  test.assertEntityNotTouching(cowId, entityNotTouchingTypePos);
+  test.assertEntityTouching(cowId, entityTouchingPos, true);
+  test.assertEntityTouching(cowId, entityNotTouchingTypePos, false);
 
   const timeBetweenEachLeverPull = 4;
 
@@ -810,8 +808,35 @@ GameTest.register("PistonTests", "honey_block_entity_drag_down", (test) => {
       test.pullLever(leverPos);
     })
     .thenWait(() => {
-      test.assertEntityTouching(cowId, entityTouchingPos);
-      test.assertEntityNotTouching(cowId, entityNotTouchingTypePos);
+      test.assertEntityTouching(cowId, entityTouchingPos, true);
+      test.assertEntityTouching(cowId, entityNotTouchingTypePos, false);
     })
     .thenSucceed();
+}).tag(GameTest.Tags.suiteDefault);
+
+GameTest.register("PistonTests", "backside_fence", (test) => {
+  const centerPos = new BlockLocation(2, 2, 2);
+  test.setBlockType(MinecraftBlockTypes.fence, centerPos);
+
+  test.startSequence().thenIdle(30).thenSucceed();
+  let connectivity = undefined;
+
+  test
+    .startSequence()
+    .thenIdle(1)
+    .thenExecute(() => {
+      connectivity = test.getFenceConnectivity(centerPos);
+      test.assert(
+        connectivity.east && connectivity.west && connectivity.north && connectivity.south,
+        "Fence should connect to pistons"
+      );
+    })
+    .thenWait(() => {
+      connectivity = test.getFenceConnectivity(centerPos);
+      test.assert(
+        !(connectivity.east && connectivity.west && connectivity.north && connectivity.south),
+        "Fence should stay connected to pistons"
+      );
+    })
+    .thenFail("Fence didn't stay connected to pistons");
 }).tag(GameTest.Tags.suiteDefault);

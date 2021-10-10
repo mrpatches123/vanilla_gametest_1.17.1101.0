@@ -1,5 +1,5 @@
-import * as GameTest from "GameTest";
-import { BlockLocation, BlockTypes } from "Minecraft";
+import * as GameTest from "mojang-gametest";
+import { BlockLocation, MinecraftBlockTypes } from "mojang-minecraft";
 
 GameTest.register("FlyingMachineTests", "machine_a", (test) => {
   const triggerPos = new BlockLocation(1, 5, 1);
@@ -9,13 +9,13 @@ GameTest.register("FlyingMachineTests", "machine_a", (test) => {
   test
     .startSequence()
     .thenExecute(() => {
-      test.setBlockType(BlockTypes.fire, triggerPos);
+      test.setBlockType(MinecraftBlockTypes.fire, triggerPos);
     })
     .thenExecuteAfter(20, () => {
-      test.assertBlockTypePresent(BlockTypes.slime, farPos);
+      test.assertBlockPresent(MinecraftBlockTypes.slime, farPos, true);
     })
     .thenExecuteAfter(20, () => {
-      test.assertBlockTypePresent(BlockTypes.slime, nearPos);
+      test.assertBlockPresent(MinecraftBlockTypes.slime, nearPos, true);
     })
     .thenSucceed();
 })
@@ -33,10 +33,10 @@ GameTest.register("FlyingMachineTests", "machine_b", (test) => {
       test.pulseRedstone(triggerPos, 2);
     })
     .thenExecuteAfter(20, () => {
-      test.assertBlockTypePresent(BlockTypes.slime, farPos);
+      test.assertBlockPresent(MinecraftBlockTypes.slime, farPos, true);
     })
     .thenExecuteAfter(20, () => {
-      test.assertBlockTypePresent(BlockTypes.slime, nearPos);
+      test.assertBlockPresent(MinecraftBlockTypes.slime, nearPos, true);
     })
     .thenSucceed();
 })
@@ -55,13 +55,13 @@ GameTest.register("FlyingMachineTests", "machine_c", (test) => {
       test.pulseRedstone(triggerPos, 2);
     })
     .thenExecuteAfter(20, () => {
-      test.assertBlockTypePresent(BlockTypes.slime, farPos);
+      test.assertBlockPresent(MinecraftBlockTypes.slime, farPos, true);
     })
     .thenExecuteAfter(20, () => {
-      test.setBlockType(BlockTypes.obsidian, stopBlock);
+      test.setBlockType(MinecraftBlockTypes.obsidian, stopBlock);
     })
     .thenExecuteAfter(2, () => {
-      test.assertBlockTypePresent(BlockTypes.stickyPiston, nearPos);
+      test.assertBlockPresent(MinecraftBlockTypes.stickyPiston, nearPos, true);
     })
     .thenSucceed();
 })
@@ -77,11 +77,11 @@ GameTest.register("FlyingMachineTests", "machine_d", (test) => {
   test
     .startSequence()
     .thenExecute(() => {
-      test.setBlockType(BlockTypes.fire, triggerPos);
+      test.setBlockType(MinecraftBlockTypes.fire, triggerPos);
     })
     .thenExecuteAfter(16, () => {
-      test.assertBlockTypePresent(BlockTypes.slime, dropPos);
-      test.assertBlockTypePresent(BlockTypes.slime, farPos);
+      test.assertBlockPresent(MinecraftBlockTypes.slime, dropPos, true);
+      test.assertBlockPresent(MinecraftBlockTypes.slime, farPos, true);
     })
     .thenSucceed();
 })
@@ -96,13 +96,13 @@ GameTest.register("FlyingMachineTests", "machine_e", (test) => {
   test
     .startSequence()
     .thenExecute(() => {
-      test.setBlockType(BlockTypes.dirt, triggerPos);
+      test.setBlockType(MinecraftBlockTypes.dirt, triggerPos);
     })
     .thenExecuteAfter(16, () => {
-      test.assertBlockTypePresent(BlockTypes.honeyBlock, farPos);
+      test.assertBlockPresent(MinecraftBlockTypes.honeyBlock, farPos, true);
     })
     .thenExecuteAfter(20, () => {
-      test.assertBlockTypePresent(BlockTypes.observer, nearPos);
+      test.assertBlockPresent(MinecraftBlockTypes.observer, nearPos, true);
     })
     .thenSucceed();
 })
@@ -118,14 +118,14 @@ GameTest.register("FlyingMachineTests", "machine_f", (test) => {
   test
     .startSequence()
     .thenExecute(() => {
-      test.setBlockType(BlockTypes.fire, triggerPos);
+      test.setBlockType(MinecraftBlockTypes.fire, triggerPos);
     })
     .thenExecuteAfter(18, () => {
-      test.assertBlockTypePresent(BlockTypes.slime, farPos);
+      test.assertBlockPresent(MinecraftBlockTypes.slime, farPos, true);
     })
     .thenExecuteAfter(40, () => {
-      test.assertBlockTypePresent(BlockTypes.slime, dropPos);
-      test.assertBlockTypePresent(BlockTypes.slime, nearPos);
+      test.assertBlockPresent(MinecraftBlockTypes.slime, dropPos, true);
+      test.assertBlockPresent(MinecraftBlockTypes.slime, nearPos, true);
     })
     .thenSucceed();
 })
@@ -143,10 +143,10 @@ GameTest.register("FlyingMachineTests", "machine_g", (test) => {
       test.pulseRedstone(triggerPos, 2);
     })
     .thenExecuteAfter(16, () => {
-      test.assertBlockTypePresent(BlockTypes.slime, farPos);
+      test.assertBlockPresent(MinecraftBlockTypes.slime, farPos, true);
     })
     .thenExecuteAfter(20, () => {
-      test.assertBlockTypePresent(BlockTypes.observer, nearPos);
+      test.assertBlockPresent(MinecraftBlockTypes.observer, nearPos, true);
     })
     .thenSucceed();
 })
@@ -165,11 +165,11 @@ GameTest.register("FlyingMachineTests", "machine_h", (test) => {
       test.pulseRedstone(triggerPos, 2);
     })
     .thenExecuteAfter(20, () => {
-      test.assertBlockTypePresent(BlockTypes.slime, farPos);
+      test.assertBlockPresent(MinecraftBlockTypes.slime, farPos, true);
     })
     .thenExecuteAfter(20, () => {
-      test.assertBlockTypePresent(BlockTypes.slime, dropPos);
-      test.assertBlockTypePresent(BlockTypes.observer, nearPos);
+      test.assertBlockPresent(MinecraftBlockTypes.slime, dropPos, true);
+      test.assertBlockPresent(MinecraftBlockTypes.observer, nearPos, true);
     })
     .thenSucceed();
 })
@@ -184,13 +184,13 @@ GameTest.register("FlyingMachineTests", "machine_i", (test) => {
   test
     .startSequence()
     .thenExecute(() => {
-      test.setBlockType(BlockTypes.dirt, triggerPos);
+      test.setBlockType(MinecraftBlockTypes.dirt, triggerPos);
     })
     .thenExecuteAfter(18, () => {
-      test.assertBlockTypePresent(BlockTypes.honeyBlock, farPos);
+      test.assertBlockPresent(MinecraftBlockTypes.honeyBlock, farPos, true);
     })
     .thenExecuteAfter(18, () => {
-      test.assertBlockTypePresent(BlockTypes.observer, nearPos);
+      test.assertBlockPresent(MinecraftBlockTypes.observer, nearPos, true);
     })
     .thenSucceed();
 })
@@ -206,15 +206,15 @@ GameTest.register("FlyingMachineTests", "m_bedrock", (test) => {
   test
     .startSequence()
     .thenExecute(() => {
-      test.assertBlockTypePresent(BlockTypes.slime, sourcePos);
-      test.assertBlockTypeNotPresent(BlockTypes.slime, targetPos);
-      test.setBlockType(BlockTypes.redstoneBlock, triggerPos);
+      test.assertBlockPresent(MinecraftBlockTypes.slime, sourcePos, true);
+      test.assertBlockPresent(MinecraftBlockTypes.slime, targetPos, false);
+      test.setBlockType(MinecraftBlockTypes.redstoneBlock, triggerPos);
     })
     .thenExecuteAfter(10, () => {
-      test.assertBlockTypeNotPresent(BlockTypes.slime, sourcePos);
+      test.assertBlockPresent(MinecraftBlockTypes.slime, sourcePos, false);
     })
     .thenExecuteAfter(10, () => {
-      test.assertBlockTypePresent(BlockTypes.slime, targetPos);
+      test.assertBlockPresent(MinecraftBlockTypes.slime, targetPos, true);
     })
     .thenSucceed();
 }).tag(GameTest.Tags.suiteDefault);
@@ -228,15 +228,15 @@ GameTest.register("FlyingMachineTests", "m2_bedrock", (test) => {
   test
     .startSequence()
     .thenExecute(() => {
-      test.assertBlockTypePresent(BlockTypes.slime, sourcePos);
-      test.assertBlockTypeNotPresent(BlockTypes.slime, targetPos);
-      test.setBlockType(BlockTypes.redstoneBlock, triggerPos);
+      test.assertBlockPresent(MinecraftBlockTypes.slime, sourcePos, true);
+      test.assertBlockPresent(MinecraftBlockTypes.slime, targetPos, false);
+      test.setBlockType(MinecraftBlockTypes.redstoneBlock, triggerPos);
     })
     .thenExecuteAfter(10, () => {
-      test.assertBlockTypeNotPresent(BlockTypes.slime, sourcePos);
+      test.assertBlockPresent(MinecraftBlockTypes.slime, sourcePos, false);
     })
     .thenExecuteAfter(10, () => {
-      test.assertBlockTypePresent(BlockTypes.slime, targetPos);
+      test.assertBlockPresent(MinecraftBlockTypes.slime, targetPos, true);
     })
     .thenSucceed();
 }).tag(GameTest.Tags.suiteDefault);
@@ -250,15 +250,15 @@ GameTest.register("FlyingMachineTests", "m3_bedrock", (test) => {
   test
     .startSequence()
     .thenExecute(() => {
-      test.assertBlockTypePresent(BlockTypes.slime, sourcePos);
-      test.assertBlockTypeNotPresent(BlockTypes.slime, targetPos);
-      test.setBlockType(BlockTypes.redstoneBlock, triggerPos);
+      test.assertBlockPresent(MinecraftBlockTypes.slime, sourcePos, true);
+      test.assertBlockPresent(MinecraftBlockTypes.slime, targetPos, false);
+      test.setBlockType(MinecraftBlockTypes.redstoneBlock, triggerPos);
     })
     .thenExecuteAfter(10, () => {
-      test.assertBlockTypeNotPresent(BlockTypes.slime, sourcePos);
+      test.assertBlockPresent(MinecraftBlockTypes.slime, sourcePos, false);
     })
     .thenExecuteAfter(10, () => {
-      test.assertBlockTypePresent(BlockTypes.slime, targetPos);
+      test.assertBlockPresent(MinecraftBlockTypes.slime, targetPos, true);
     })
     .thenSucceed();
-}).tag(GameTest.Tags.suiteDisabled); // Unstable, the pass rate is 85%
+}).tag(GameTest.Tags.suiteDefault);

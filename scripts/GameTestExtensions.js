@@ -23,4 +23,10 @@ export default class GameTestExtensions {
     healthComp.setCurrent(1);
     breathableComp.setAirSupply(0);
   }
+
+  assertBlockProperty(propertyName, value, blockLocation) {
+    this.test.assertBlockState(blockLocation, (block) => {
+      return block.getBlockData().getProperty(propertyName).value == value;
+    });
+  }
 }

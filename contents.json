@@ -19,6 +19,9 @@
             "path": "scripts/APITests.js"
         },
         {
+            "path": "scripts/BigMobTests.js"
+        },
+        {
             "path": "scripts/BlockTests.js"
         },
         {
@@ -32,6 +35,9 @@
         },
         {
             "path": "scripts/DoorTests.js"
+        },
+        {
+            "path": "scripts/DripstoneTests.js"
         },
         {
             "path": "scripts/DuplicationTests.js"
@@ -61,10 +67,16 @@
             "path": "scripts/MobTests.js"
         },
         {
+            "path": "scripts/MultifaceTests.js"
+        },
+        {
             "path": "scripts/PathFindingTests.js"
         },
         {
             "path": "scripts/PistonTests.js"
+        },
+        {
+            "path": "scripts/RedstoneTests.js"
         },
         {
             "path": "scripts/SmallMobTests.js"
@@ -74,6 +86,9 @@
         },
         {
             "path": "structures/APITests/armor_stand.mcstructure"
+        },
+        {
+            "path": "structures/APITests/assert_can_reach_location.mcstructure"
         },
         {
             "path": "structures/APITests/assert_entity_present.mcstructure"
@@ -88,16 +103,43 @@
             "path": "structures/APITests/assert_redstone_power.mcstructure"
         },
         {
+            "path": "structures/APITests/cauldron.mcstructure"
+        },
+        {
+            "path": "structures/APITests/connectivity.mcstructure"
+        },
+        {
             "path": "structures/APITests/create_explosion_advanced.mcstructure"
         },
         {
             "path": "structures/APITests/create_explosion_basic.mcstructure"
         },
         {
+            "path": "structures/APITests/jukebox.mcstructure"
+        },
+        {
+            "path": "structures/APITests/piston.mcstructure"
+        },
+        {
             "path": "structures/APITests/pulse_redstone.mcstructure"
         },
         {
+            "path": "structures/APITests/rotate_direction.mcstructure"
+        },
+        {
+            "path": "structures/APITests/sneaking.mcstructure"
+        },
+        {
             "path": "structures/APITests/spawn_item.mcstructure"
+        },
+        {
+            "path": "structures/APITests/spread_from_face_toward_direction.mcstructure"
+        },
+        {
+            "path": "structures/BigMobTests/altitude_change_wall_on_left.mcstructure"
+        },
+        {
+            "path": "structures/BigMobTests/altitude_change_wall_on_right.mcstructure"
         },
         {
             "path": "structures/BlockTests/concrete_pops_off_waterlogged_chest.mcstructure"
@@ -110,6 +152,9 @@
         },
         {
             "path": "structures/BlockTests/concrete_solidifies_next_to_water.mcstructure"
+        },
+        {
+            "path": "structures/BlockTests/dispenser_light_candles.mcstructure"
         },
         {
             "path": "structures/BlockTests/explosion_drop_location.mcstructure"
@@ -217,6 +262,12 @@
             "path": "structures/DispenserTests/dispenser_water.mcstructure"
         },
         {
+            "path": "structures/DoorTests/close_door_after_passing_through.mcstructure"
+        },
+        {
+            "path": "structures/DoorTests/close_door_even_if_near_bed.mcstructure"
+        },
+        {
             "path": "structures/DoorTests/door_maze.mcstructure"
         },
         {
@@ -236,6 +287,30 @@
         },
         {
             "path": "structures/DoorTests/villagers_can_pass_open_iron_door.mcstructure"
+        },
+        {
+            "path": "structures/DripstoneTests/stalactite_fall.mcstructure"
+        },
+        {
+            "path": "structures/DripstoneTests/stalactite_fall_bedrock.mcstructure"
+        },
+        {
+            "path": "structures/DripstoneTests/stalactite_fall_no_dupe.mcstructure"
+        },
+        {
+            "path": "structures/DripstoneTests/stalactite_hurt.mcstructure"
+        },
+        {
+            "path": "structures/DripstoneTests/stalagmite_break.mcstructure"
+        },
+        {
+            "path": "structures/DripstoneTests/stalagmite_hurt.mcstructure"
+        },
+        {
+            "path": "structures/DripstoneTests/stalagmite_stalactite_separation.mcstructure"
+        },
+        {
+            "path": "structures/DripstoneTests/thickness_update.mcstructure"
         },
         {
             "path": "structures/DuplicationTests/detector_rail.mcstructure"
@@ -340,6 +415,9 @@
             "path": "structures/MinecartTests/detector_rail_piston.mcstructure"
         },
         {
+            "path": "structures/MinecartTests/detector_rail_piston_bedrock.mcstructure"
+        },
+        {
             "path": "structures/MinecartTests/detector_rail_slope.mcstructure"
         },
         {
@@ -392,6 +470,66 @@
         },
         {
             "path": "structures/MobTests/zombie_burn.mcstructure"
+        },
+        {
+            "path": "structures/MultifaceTests/break_if_all_supporting_faces_destroyed.mcstructure"
+        },
+        {
+            "path": "structures/MultifaceTests/default_multiface_block_has_all_sides.mcstructure"
+        },
+        {
+            "path": "structures/MultifaceTests/dont_spread_into_flowing_water.mcstructure"
+        },
+        {
+            "path": "structures/MultifaceTests/dont_spread_into_lava.mcstructure"
+        },
+        {
+            "path": "structures/MultifaceTests/dont_spread_toward_opposite_face.mcstructure"
+        },
+        {
+            "path": "structures/MultifaceTests/dont_spread_toward_same_face.mcstructure"
+        },
+        {
+            "path": "structures/MultifaceTests/remove_face_if_support_destroyed.mcstructure"
+        },
+        {
+            "path": "structures/MultifaceTests/remove_if_has_no_faces.mcstructure"
+        },
+        {
+            "path": "structures/MultifaceTests/spread_around_partly_blocked_corner.mcstructure"
+        },
+        {
+            "path": "structures/MultifaceTests/spread_from_air_to_water.mcstructure"
+        },
+        {
+            "path": "structures/MultifaceTests/spread_from_ceiling_around_corner.mcstructure"
+        },
+        {
+            "path": "structures/MultifaceTests/spread_from_floor_around_corner.mcstructure"
+        },
+        {
+            "path": "structures/MultifaceTests/spread_from_wall_around_corner.mcstructure"
+        },
+        {
+            "path": "structures/MultifaceTests/spread_from_water_to_air.mcstructure"
+        },
+        {
+            "path": "structures/MultifaceTests/spread_on_flat_ceiling.mcstructure"
+        },
+        {
+            "path": "structures/MultifaceTests/spread_on_flat_floor.mcstructure"
+        },
+        {
+            "path": "structures/MultifaceTests/spread_on_flat_wall.mcstructure"
+        },
+        {
+            "path": "structures/MultifaceTests/spread_sideways_within_same_corner.mcstructure"
+        },
+        {
+            "path": "structures/MultifaceTests/spread_up_within_same_corner.mcstructure"
+        },
+        {
+            "path": "structures/MultifaceTests/spread_within_water.mcstructure"
         },
         {
             "path": "structures/PathFindingTests/big_obstacle_course.mcstructure"
@@ -503,6 +641,87 @@
         },
         {
             "path": "structures/PistonTests/update_order_bedrock.mcstructure"
+        },
+        {
+            "path": "structures/RedstoneTests/comparator_container.mcstructure"
+        },
+        {
+            "path": "structures/RedstoneTests/comparator_logic.mcstructure"
+        },
+        {
+            "path": "structures/RedstoneTests/dust_loop_depowering.mcstructure"
+        },
+        {
+            "path": "structures/RedstoneTests/dust_loop_depowering_bedrock.mcstructure"
+        },
+        {
+            "path": "structures/RedstoneTests/dust_propagation.mcstructure"
+        },
+        {
+            "path": "structures/RedstoneTests/dust_propagation_bedrock.mcstructure"
+        },
+        {
+            "path": "structures/RedstoneTests/itemframe_override.mcstructure"
+        },
+        {
+            "path": "structures/RedstoneTests/itemframe_override_bedrock.mcstructure"
+        },
+        {
+            "path": "structures/RedstoneTests/lever_power.mcstructure"
+        },
+        {
+            "path": "structures/RedstoneTests/observer_clock.mcstructure"
+        },
+        {
+            "path": "structures/RedstoneTests/repeater_clock.mcstructure"
+        },
+        {
+            "path": "structures/RedstoneTests/repeater_delay.mcstructure"
+        },
+        {
+            "path": "structures/RedstoneTests/repeater_delay_bedrock.mcstructure"
+        },
+        {
+            "path": "structures/RedstoneTests/repeater_delay_lines.mcstructure"
+        },
+        {
+            "path": "structures/RedstoneTests/repeater_lock.mcstructure"
+        },
+        {
+            "path": "structures/RedstoneTests/repeater_regeneration.mcstructure"
+        },
+        {
+            "path": "structures/RedstoneTests/rs_latch.mcstructure"
+        },
+        {
+            "path": "structures/RedstoneTests/rs_latch_bedrock.mcstructure"
+        },
+        {
+            "path": "structures/RedstoneTests/subtractor_logic.mcstructure"
+        },
+        {
+            "path": "structures/RedstoneTests/torch_monostable.mcstructure"
+        },
+        {
+            "path": "structures/RedstoneTests/torch_monostable_bedrock.mcstructure"
+        },
+        {
+            "path": "structures/RedstoneTests/torch_nand.mcstructure"
+        },
+        {
+            "path": "structures/RedstoneTests/torch_nor.mcstructure"
+        },
+        {
+            "path": "structures/RedstoneTests/wireredirect_nonconductor.mcstructure"
+        },
+        {
+            "path": "structures/RedstoneTests/wireredirect_nonconductor_bedrock.mcstructure"
+        },
+        {
+            "path": "structures/RedstoneTests/wire_redirect.mcstructure"
+        },
+        {
+            "path": "structures/RedstoneTests/wire_redirect_bedrock.mcstructure"
         },
         {
             "path": "structures/SmallMobTests/fence_corner.mcstructure"

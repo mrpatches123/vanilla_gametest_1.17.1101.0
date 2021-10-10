@@ -1,5 +1,5 @@
-import * as GameTest from "GameTest";
-import { BlockLocation, Items, ItemStack } from "Minecraft";
+import * as GameTest from "mojang-gametest";
+import { BlockLocation, MinecraftItemTypes, ItemStack } from "mojang-minecraft";
 
 function isNear(n1, n2) {
   return Math.abs(n1 - n2) < 0.01;
@@ -70,7 +70,7 @@ GameTest.register("ComponentTests", "leashable_component", (test) => {
     leashableComp.unleash();
   });
   test.succeedWhen(() => {
-    test.assertEntityPresentInArea("minecraft:item"); // Make sure the lead dropped
+    test.assertEntityPresentInArea("minecraft:item", true); // Make sure the lead dropped
   });
 }).tag(GameTest.Tags.suiteDefault);
 
@@ -413,10 +413,10 @@ GameTest.register("ComponentTests", "inventory_component", (test) => {
   const leftContainer = leftInventoryComp.container;
   test.assert(leftContainer !== undefined, "Expected container");
 
-  rightContainer.setItem(0, new ItemStack(Items.apple, 10, 0));
+  rightContainer.setItem(0, new ItemStack(MinecraftItemTypes.apple, 10, 0));
   test.assert(rightContainer.getItem(0).id === "apple", "Expected apple in right container slot index 0");
 
-  rightContainer.setItem(1, new ItemStack(Items.emerald, 10, 0));
+  rightContainer.setItem(1, new ItemStack(MinecraftItemTypes.emerald, 10, 0));
   test.assert(rightContainer.getItem(1).id === "emerald", "Expected emerald in right container slot index 1");
 
   test.assert(rightContainer.size === 27, "Unexpected size");
@@ -427,7 +427,7 @@ GameTest.register("ComponentTests", "inventory_component", (test) => {
   test.assert(itemStack.amount === 10, "Expected 10 apples");
   test.assert(itemStack.data === 0, "Expected 0 data");
 
-  leftContainer.setItem(0, new ItemStack(Items.cake, 10, 0));
+  leftContainer.setItem(0, new ItemStack(MinecraftItemTypes.cake, 10, 0));
 
   test.assert(rightContainer.transferItem(0, 4, leftContainer), "Expected transferItem to succeed"); // transfer the apple from the right container to the left container
   test.assert(rightContainer.swapItems(1, 0, leftContainer), "Expected swapItems to succeed"); // swap the cake and emerald

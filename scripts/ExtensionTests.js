@@ -1,6 +1,6 @@
-import * as GameTest from "GameTest";
+import * as GameTest from "mojang-gametest";
 import GameTestExtensions from "./GameTestExtensions.js";
-import { BlockLocation } from "Minecraft";
+import { BlockLocation } from "mojang-minecraft";
 
 GameTest.register("ExtensionTests", "add_entity_in_boat", (test) => {
   const testEx = new GameTestExtensions(test);
@@ -18,7 +18,7 @@ GameTest.register("ExtensionTests", "make_about_to_drown", (test) => {
   testEx.makeAboutToDrown(villager);
 
   test.succeedWhen(() => {
-    test.assertEntityNotPresentInArea(villagerId);
+    test.assertEntityPresentInArea(villagerId, false);
   });
 })
   .structureName("ComponentTests:aquarium")

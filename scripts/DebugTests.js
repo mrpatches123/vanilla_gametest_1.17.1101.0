@@ -1,4 +1,4 @@
-import * as GameTest from "GameTest";
+import * as GameTest from "mojang-gametest";
 
 GameTest.register("DebugTests", "always_fail", (test) => {
   // Do nothing, let the test time out

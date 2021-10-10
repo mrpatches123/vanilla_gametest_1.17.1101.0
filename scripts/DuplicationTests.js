@@ -1,5 +1,5 @@
-import * as GameTest from "GameTest";
-import { BlockLocation, Items } from "Minecraft";
+import * as GameTest from "mojang-gametest";
+import { BlockLocation, MinecraftItemTypes } from "mojang-minecraft";
 
 function poweredRailTest(test, pulseTicks) {
   test.pulseRedstone(new BlockLocation(1, 2, 3), pulseTicks);
@@ -7,7 +7,7 @@ function poweredRailTest(test, pulseTicks) {
   test
     .startSequence()
     .thenIdle(3)
-    .thenExecute(() => test.assertItemEntityCountIs(Items.goldenRail, new BlockLocation(1, 2, 1), 1.0, 1)) // powered rail
+    .thenExecute(() => test.assertItemEntityCountIs(MinecraftItemTypes.goldenRail, new BlockLocation(1, 2, 1), 1.0, 1)) // powered rail
     .thenSucceed();
 }
 
@@ -41,7 +41,9 @@ GameTest.register("DuplicationTests", "detector_rail", (test) => {
   test
     .startSequence()
     .thenIdle(3)
-    .thenExecute(() => test.assertItemEntityCountIs(Items.detectorRail, new BlockLocation(1, 2, 1), 1.0, 1))
+    .thenExecute(() =>
+      test.assertItemEntityCountIs(MinecraftItemTypes.detectorRail, new BlockLocation(1, 2, 1), 1.0, 1)
+    )
     .thenSucceed();
 }).tag(GameTest.Tags.suiteDefault);
 
@@ -51,7 +53,7 @@ function railClassicTest(test, pulseTicks) {
   test
     .startSequence()
     .thenIdle(3)
-    .thenExecute(() => test.assertItemEntityCountIs(Items.rail, new BlockLocation(1, 4, 2), 1.0, 0))
+    .thenExecute(() => test.assertItemEntityCountIs(MinecraftItemTypes.rail, new BlockLocation(1, 4, 2), 1.0, 0))
     .thenSucceed();
 }
 
